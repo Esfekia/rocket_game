@@ -12,7 +12,7 @@ class RocketGame:
 		"""Initialize the game and create the game resources."""
 
 		pygame.init()
-
+		self.bg = pygame.image.load("images/space.bmp")
 		self.settings = Settings()
 		self.screen = pygame.display.set_mode(
 			(self.settings.screen_width, self.settings.screen_height))
@@ -73,6 +73,8 @@ class RocketGame:
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
+		#Add background picture.
+		self.screen.blit(self.bg, (0, 0))
 		self.rocket.blitme()
 			
 		#Make the most recently drawn screen visible.
