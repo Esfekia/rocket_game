@@ -37,6 +37,12 @@ class RocketGame:
 			#Update the rocket's position.
 			self.rocket.update()
 
+			#Update the bullet's position.
+			self._update_bullets()
+
+			#Update the Alien's movement.
+			self._update_aliens()
+
 			#Redraw the screen during each loop.
 			self._update_screen()
 	
@@ -75,6 +81,76 @@ class RocketGame:
 			self.rocket.moving_up = False
 		elif event.key == pygame.K_DOWN:
 			self.rocket.moving_down = False
+
+	def _fire_bullets(self):
+		"""Create a new bullet and add it to the bullets group."""
+		#First check max bullets allowed in settings.
+		if len(self.bullets) < self.settings.bullets_allowed:
+			new_bullet = Bullet(self)
+			self.bullets.add(new_bullet)
+
+	def _update_bullets(self):
+		"""Update position of bullets and get rid of old bullets."""
+		self.bullets.update()
+
+		#Get rid of old bullets that have disappeared from screen.
+		for bullet in self.bullets.copy():
+			if bullet.rect.bottom<= 0:
+				self.bullets.remove(bullet)
+
+		self._check_bullet_alien_collisions()
+
+	def _check_bullet_alien_collisions(self):
+		"""Respond to bullet-alien collisions."""
+
+		#Remove any bullets and aliens that have collided.
+		collisions = pygame.sprite.groupcollide(
+			self.bullets, self.aliens, True, True)
+
+		#Check to see if all aliens are dead:
+		if not self.aliens:
+			#Destroy existing bullets and create new fleet.
+			self.bullets.empty()
+			self._create_fleet()
+
+	def _update_aliens(self):
+		"""First check if the fleet is at an edge,
+		Then update the positions of all aliens in the fleet."""
+		self._check_fleet_edges()
+		self.aliens.update()
+
+	def _create_fleet(self):
+		"""Create the fleet of aliens."""
+
+		#Create an alien and find the number of aliens in a column.
+		#Spacing between each alien is equal to one alien height.
+
+		alien = Alien(self)
+		alien_width, alien_height = alien.rect.size
+		available_space_y = self.settings.screen_height - (2*alien_height)
+		number_aliens_y = available_space_y // (2*alien_height)
+
+		#Determine the number of columns that fit on the screen:
+
+		rocket_width = self.rocket.rect.width
+		available_space_x = (self.settings.screen_width -
+				(3*alien_width) - rocket_width)
+		number_columns = available_space_x // (2*alien_width)
+
+		#Create full fleet of aliens.
+		for column_number in range(number_columns):
+			for alien_number in range(number_aliens_y):
+				self._create_alien(alien_number, column_number)
+
+	def _create_alien(self, alien_number, column_number):
+		"""Create an alien and place it in the column."""
+
+		alien = Alien(self)
+		alien_width, alien_height = alien.rect.size
+		alien.y =alien_height + 2*alien_height*alien_number
+		alien.rect.y = alien.y
+		alien.rect.x = alien.rect.width + 2*alien.rect.alien_width * column_number
+		self.aliens.add()
 
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
