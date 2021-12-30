@@ -4,6 +4,8 @@ import pygame
 
 from settings import Settings
 from rocket import Rocket
+from bullet import Bullet
+from alien import Alien
 
 class RocketGame:
 	"""Overall class to manage the game assets and behavior"""
@@ -21,6 +23,10 @@ class RocketGame:
 		pygame.display.set_caption = ("Space Rocket!")
 
 		self.rocket = Rocket(self)
+		self.bullets = pygame.sprite.Group()
+		self.aliens = pygame.sprite.Group()
+
+		self._create_fleet()
 
 	def run_game(self):
 		"""Start the main loop for the game."""
