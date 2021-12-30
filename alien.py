@@ -1,10 +1,11 @@
 import pygame
 from pygame.sprite import Sprite
+from random import randint
 
 class Alien(Sprite):
 	"""A class to represent a single alien in the fleet."""
 
-	def __init__(self, ai_game):
+	def __init__(self, rg_game):
 		"""Initialize the alien and set its starting position."""
 		super().__init__()
 		self.screen = rg_game.screen
@@ -15,11 +16,15 @@ class Alien(Sprite):
 		self.rect = self.image.get_rect()
 
 		#Start each new alien near the top right of the screen.
-		self.rect.x = self.rect.width
-		self.rect.y = self.rect.height
+		self.rect.left = self.screen.get_rect().right
 
-		#Store the alien's exact vertical position.
-		self.y = float(self.rect.y)
+		#The farthest down the scren we will place the alien is
+		#the height of the screen, minus the height of the alien.
+		alien_top_max = self.settings.screen_height - self.rect.height
+		self.rect.top = randint (0, alien_top_max)
+
+		#Store the alien's exact horizontal position.
+		self.x = float(self.rect.x)
 
 	def check_edges(self):
 		"""Return True if alien is at edge of screen."""

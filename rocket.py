@@ -13,8 +13,8 @@ class Rocket:
 		self.image = pygame.image.load('images/ship.bmp')
 		self.rect = self.image.get_rect()
 
-		#Start each new rocket at the center of the screen.
-		self.rect.center = self.screen_rect.center
+		#Start each new rocket at the midleft of the screen.
+		self.rect.midleft = self.screen_rect.midleft
 
 		#Store a decimal value for the rocket's horizontal position.
 		self.x = float(self.rect.x)
