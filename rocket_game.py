@@ -150,7 +150,14 @@ class RocketGame:
 		alien.y =alien_height + 2*alien_height*alien_number
 		alien.rect.y = alien.y
 		alien.rect.x = alien.rect.width + 2*alien.rect.alien_width * column_number
-		self.aliens.add()
+		self.aliens.add(alien)
+
+	def _check_fleet_edges(self):
+		"""Respond if aliens have reached an edge."""
+		for alien in self.aliens.sprites():
+			if alien.check_edges():
+				self._change_fleet_direction()
+				break
 
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
@@ -158,6 +165,13 @@ class RocketGame:
 		#Add background picture.
 		self.screen.blit(self.bg, (0, 0))
 		self.rocket.blitme()
+
+		#Draw the bullets
+		for bullet in self.bullets.sprites():
+			bullet.draw_bullet()
+
+		#Draw the aliens
+		self.aliens.draw(self.screen)
 			
 		#Make the most recently drawn screen visible.
 		pygame.display.flip()
